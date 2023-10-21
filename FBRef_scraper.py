@@ -74,4 +74,20 @@ def get_all_this_season_stats():
 
     return overall_df
 
+def get_all_season_stats(season: str):
+  overall_df = get_stats(f'https://fbref.com/en/comps/Big5/{season}/stats/players/{season}-Big-5-European-Leagues-Stats')
+  print(overall_df)
+  for stat in DATA_CATEGORIES:
+    # changes based on the list of keywords within the URL of the sites
+    url = f'https://fbref.com/en/comps/Big5/{season}/{stat}/players/{season}-Big-5-European-Leagues-Stats'
+    new_df = get_stats(url)
+
+    # Gets the columns that are common so they can join correctly
+    common_columns = overall_df.columns.intersection(new_df.columns).tolist()
+    overall_df = overall_df.merge(new_df, on=common_columns, how='inner')
+    print(overall_df)
+    print("CYCLE DONE")
+
+  return overall_df
+
 
